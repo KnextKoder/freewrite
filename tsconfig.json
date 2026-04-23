@@ -2,8 +2,8 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "CommonJS",
-    "rootDir": "src",
-    "outDir": ".",
+    "rootDir": "app",
+    "outDir": "generated",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -11,6 +11,6 @@
     "types": ["node"],
     "sourceMap": false
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["app/**/*.ts"],
+  "exclude": ["node_modules", "dist", "generated"]
 }

@@ -8,6 +8,7 @@ bun.lock
 # Build output
 dist/
 out/
+generated/
 
 # Environment variables
 .env

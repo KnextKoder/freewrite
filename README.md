@@ -51,8 +51,8 @@ This is a Windows port of the original macOS app, converted to Electron with a T
 ### Tech Stack
 
 - Electron (main process + desktop shell)
-- TypeScript (compiled from `src/main.ts` and `src/js/renderer.ts`)
-- TailwindCSS (compiled from `src/css/tailwind.css` to `css/styles.css`)
+- TypeScript (compiled from `app/main.ts` and `app/renderer.ts` into `generated/`)
+- TailwindCSS (compiled from `app/tailwind.css` to `generated/styles.css`)
 
 ## Usage
 
