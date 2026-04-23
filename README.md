@@ -2,7 +2,7 @@
 
 A simple, open-source Windows app to [freewrite](https://writingprocess.mit.edu/process/step-1-generate-ideas/instructions/freewriting/).
 
-This is a Windows port of the original macOS app, converted to Electron.
+This is a Windows port of the original macOS app, converted to Electron with a TypeScript + TailwindCSS frontend/tooling stack.
 
 ## Installation
 
@@ -42,6 +42,17 @@ This is a Windows port of the original macOS app, converted to Electron.
    ```
    npm run start
    ```
+
+4. For live development (TS + Tailwind watchers + Electron auto-restart):
+   ```
+   npm run dev
+   ```
+
+### Tech Stack
+
+- Electron (main process + desktop shell)
+- TypeScript (compiled from `src/main.ts` and `src/js/renderer.ts`)
+- TailwindCSS (compiled from `src/css/tailwind.css` to `css/styles.css`)
 
 ## Usage
 

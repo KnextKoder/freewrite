@@ -1,229 +1,169 @@
-const { app, BrowserWindow, Menu, ipcMain, dialog, shell, globalShortcut } = require('electron');
-const path = require('path');
-const fs = require('fs');
-
-// Handle creating/removing shortcuts on Windows when installing/uninstalling
-if (require('electron-squirrel-startup')) {
-  app.quit();
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const electron_1 = require("electron");
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
+if (require("electron-squirrel-startup")) {
+    electron_1.app.quit();
 }
-
-let mainWindow;
-
-function createWindow() {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({
-    width: 1100,
-    height: 600,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-      enableRemoteModule: true,
-    },
-    frame: false,
-    titleBarStyle: 'hidden',
-    backgroundColor: '#FFFFFF',
-    show: false,
-    roundedCorners: false,
-    icon: path.join(__dirname, 'assets/icon.png')
-  });
-
-  // and load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, 'index.html'));
-  
-  // Wait until the content is ready, then show window
-  mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
-  });
-  
-  // Create application menu (empty)
-  const template = [];
-  const menu = Menu.buildFromTemplate(template);
-  Menu.setApplicationMenu(menu);
-  
-  // Register a global shortcut listener for Escape key to exit the app
-  mainWindow.on('focus', () => {
-    globalShortcut.register('Escape', () => {
-      if (mainWindow) {
-        if (mainWindow.isFullScreen()) {
-          // If in fullscreen, first exit fullscreen
-          mainWindow.setFullScreen(false);
-        } else {
-          // If not in fullscreen, quit the app
-          app.quit();
-        }
-      }
-    });
-  });
-  
-  // Unregister the shortcut when the window loses focus
-  mainWindow.on('blur', () => {
-    globalShortcut.unregisterAll();
-  });
-  
-  // Unregister shortcuts when window is closed
-  mainWindow.on('closed', () => {
-    globalShortcut.unregisterAll();
-    mainWindow = null;
-  });
-}
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-app.whenReady().then(() => {
-  createWindow();
-  
-  app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
-  });
-});
-
-// Quit when all windows are closed, except on macOS.
-app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit();
-});
-
-// Listen for save entry event
-ipcMain.on('save-entry', (event, data) => {
-  const { content, filename } = data;
-  
-  // Get documents directory
-  const documentsPath = path.join(app.getPath('documents'), 'Freewrite');
-  
-  // Create directory if it doesn't exist
-  if (!fs.existsSync(documentsPath)) {
-    fs.mkdirSync(documentsPath, { recursive: true });
-  }
-  
-  const filePath = path.join(documentsPath, filename);
-  
-  // Save the file
-  fs.writeFileSync(filePath, content, 'utf-8');
-  event.reply('save-complete', { success: true, path: filePath });
-});
-
-// Listen for load entries event
-ipcMain.on('load-entries', (event) => {
-  const documentsPath = path.join(app.getPath('documents'), 'Freewrite');
-  
-  // Create directory if it doesn't exist
-  if (!fs.existsSync(documentsPath)) {
-    fs.mkdirSync(documentsPath, { recursive: true });
-    event.reply('entries-loaded', { entries: [] });
-    return;
-  }
-  
-  // Read all markdown files
-  fs.readdir(documentsPath, (err, files) => {
-    if (err) {
-      event.reply('entries-loaded', { entries: [], error: err.message });
-      return;
+let mainWindow = null;
+const getEntriesDirectory = () => {
+    return path_1.default.join(electron_1.app.getPath("documents"), "Freewrite");
+};
+const ensureEntriesDirectory = () => {
+    const documentsPath = getEntriesDirectory();
+    if (!fs_1.default.existsSync(documentsPath)) {
+        fs_1.default.mkdirSync(documentsPath, { recursive: true });
     }
-    
-    const mdFiles = files.filter(file => file.endsWith('.md'));
-    const entries = [];
-    
-    mdFiles.forEach(filename => {
-      const filePath = path.join(documentsPath, filename);
-      const content = fs.readFileSync(filePath, 'utf-8');
-      const previewText = content.replace(/\n/g, ' ').trim().substring(0, 30) + (content.length > 30 ? '...' : '');
-      
-      // Extract UUID and date from filename - pattern [uuid]-[yyyy-MM-dd-HH-mm-ss].md
-      const uuidMatch = filename.match(/\[(.*?)\]/);
-      const dateMatch = filename.match(/\[(\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2})\]/);
-      
-      if (uuidMatch && dateMatch) {
-        const uuid = uuidMatch[1];
-        const dateString = dateMatch[1];
-        
-        // Parse date for display
-        const [year, month, day] = dateString.split('-');
-        const date = new Date(year, month - 1, day);
-        const displayDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        
-        entries.push({
-          id: uuid,
-          date: displayDate,
-          filename: filename,
-          previewText: previewText,
-          content: content
+    return documentsPath;
+};
+const createWindow = () => {
+    mainWindow = new electron_1.BrowserWindow({
+        width: 1100,
+        height: 600,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        },
+        frame: false,
+        titleBarStyle: "hidden",
+        backgroundColor: "#FFFFFF",
+        show: false,
+        roundedCorners: false,
+        icon: path_1.default.join(__dirname, "assets/icon.png")
+    });
+    mainWindow.loadFile(path_1.default.join(__dirname, "index.html"));
+    mainWindow.once("ready-to-show", () => {
+        mainWindow?.show();
+    });
+    const menu = electron_1.Menu.buildFromTemplate([]);
+    electron_1.Menu.setApplicationMenu(menu);
+    mainWindow.on("focus", () => {
+        electron_1.globalShortcut.register("Escape", () => {
+            if (!mainWindow) {
+                return;
+            }
+            if (mainWindow.isFullScreen()) {
+                mainWindow.setFullScreen(false);
+            }
+            else {
+                electron_1.app.quit();
+            }
         });
-      }
     });
-    
-    // Sort entries by date (newest first)
-    entries.sort((a, b) => {
-      const dateA = new Date(a.filename.match(/\[(\d{4}-\d{2}-\d{2})/)[1]);
-      const dateB = new Date(b.filename.match(/\[(\d{4}-\d{2}-\d{2})/)[1]);
-      return dateB - dateA;
+    mainWindow.on("blur", () => {
+        electron_1.globalShortcut.unregisterAll();
     });
-    
-    event.reply('entries-loaded', { entries });
-  });
+    mainWindow.on("closed", () => {
+        electron_1.globalShortcut.unregisterAll();
+        mainWindow = null;
+    });
+};
+electron_1.app.whenReady().then(() => {
+    createWindow();
+    electron_1.app.on("activate", () => {
+        if (electron_1.BrowserWindow.getAllWindows().length === 0) {
+            createWindow();
+        }
+    });
 });
-
-// Listen for load entry event
-ipcMain.on('load-entry', (event, data) => {
-  const { filename } = data;
-  const documentsPath = path.join(app.getPath('documents'), 'Freewrite');
-  const filePath = path.join(documentsPath, filename);
-  
-  fs.readFile(filePath, 'utf-8', (err, content) => {
-    if (err) {
-      event.reply('entry-loaded', { success: false, error: err.message });
-      return;
+electron_1.app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
+        electron_1.app.quit();
     }
-    
-    event.reply('entry-loaded', { success: true, content });
-  });
 });
-
-// Listen for fullscreen toggle event
-ipcMain.on('toggle-fullscreen', (event) => {
-  if (mainWindow) {
-    const isFullScreen = mainWindow.isFullScreen();
-    mainWindow.setFullScreen(!isFullScreen);
-  }
+electron_1.ipcMain.on("save-entry", (event, data) => {
+    const documentsPath = ensureEntriesDirectory();
+    const filePath = path_1.default.join(documentsPath, data.filename);
+    fs_1.default.writeFileSync(filePath, data.content, "utf-8");
+    event.reply("save-complete", { success: true, path: filePath });
 });
-
-// Listen for request to get fullscreen state
-ipcMain.on('get-fullscreen-state', (event) => {
-  if (mainWindow) {
-    event.reply('fullscreen-state', mainWindow.isFullScreen());
-  }
+electron_1.ipcMain.on("load-entries", (event) => {
+    const documentsPath = ensureEntriesDirectory();
+    fs_1.default.readdir(documentsPath, (err, files) => {
+        if (err) {
+            event.reply("entries-loaded", { entries: [], error: err.message });
+            return;
+        }
+        const entries = files
+            .filter((file) => file.endsWith(".md"))
+            .map((filename) => {
+            const filePath = path_1.default.join(documentsPath, filename);
+            const content = fs_1.default.readFileSync(filePath, "utf-8");
+            const preview = content.replace(/\n/g, " ").trim();
+            const previewText = `${preview.substring(0, 30)}${preview.length > 30 ? "..." : ""}`;
+            const uuidMatch = filename.match(/\[(.*?)\]/);
+            const dateMatch = filename.match(/\[(\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2})\]/);
+            if (!uuidMatch || !dateMatch) {
+                return null;
+            }
+            const [year, month, day] = dateMatch[1].split("-");
+            const date = new Date(Number(year), Number(month) - 1, Number(day));
+            return {
+                id: uuidMatch[1],
+                date: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+                filename,
+                previewText,
+                content
+            };
+        })
+            .filter((entry) => entry !== null);
+        entries.sort((a, b) => {
+            const aMatch = a.filename.match(/\[(\d{4}-\d{2}-\d{2})/);
+            const bMatch = b.filename.match(/\[(\d{4}-\d{2}-\d{2})/);
+            if (!aMatch || !bMatch) {
+                return 0;
+            }
+            return new Date(bMatch[1]).getTime() - new Date(aMatch[1]).getTime();
+        });
+        event.reply("entries-loaded", { entries });
+    });
 });
-
-// Handle opening external URLs
-ipcMain.on('open-external-url', (event, data) => {
-  const { url } = data;
-  shell.openExternal(url);
+electron_1.ipcMain.on("load-entry", (event, data) => {
+    const filePath = path_1.default.join(getEntriesDirectory(), data.filename);
+    fs_1.default.readFile(filePath, "utf-8", (err, content) => {
+        if (err) {
+            event.reply("entry-loaded", { success: false, error: err.message });
+            return;
+        }
+        event.reply("entry-loaded", { success: true, content });
+    });
 });
-
-// Listen for handle-escape event from renderer
-ipcMain.on('handle-escape', (event) => {
-  if (mainWindow) {
+electron_1.ipcMain.on("toggle-fullscreen", () => {
+    if (!mainWindow) {
+        return;
+    }
+    mainWindow.setFullScreen(!mainWindow.isFullScreen());
+});
+electron_1.ipcMain.on("get-fullscreen-state", (event) => {
+    if (mainWindow) {
+        event.reply("fullscreen-state", mainWindow.isFullScreen());
+    }
+});
+electron_1.ipcMain.on("open-external-url", (_event, data) => {
+    electron_1.shell.openExternal(data.url);
+});
+electron_1.ipcMain.on("handle-escape", () => {
+    if (!mainWindow) {
+        return;
+    }
     if (mainWindow.isFullScreen()) {
-      // If in fullscreen, first exit fullscreen
-      mainWindow.setFullScreen(false);
-    } else {
-      // If not in fullscreen, quit the app
-      app.quit();
+        mainWindow.setFullScreen(false);
     }
-  }
+    else {
+        electron_1.app.quit();
+    }
 });
-
-// Listen for load-welcome-message event
-ipcMain.on('load-welcome-message', (event) => {
-  const defaultMdPath = path.join(__dirname, 'default.md');
-  
-  fs.readFile(defaultMdPath, 'utf-8', (err, content) => {
-    if (err) {
-      console.error('Error loading welcome message:', err);
-      event.reply('welcome-message-loaded', { success: false, error: err.message });
-      return;
-    }
-    
-    event.reply('welcome-message-loaded', { success: true, content });
-  });
-}); 
+electron_1.ipcMain.on("load-welcome-message", (event) => {
+    const defaultMdPath = path_1.default.join(__dirname, "default.md");
+    fs_1.default.readFile(defaultMdPath, "utf-8", (err, content) => {
+        if (err) {
+            event.reply("welcome-message-loaded", { success: false, error: err.message });
+            return;
+        }
+        event.reply("welcome-message-loaded", { success: true, content });
+    });
+});

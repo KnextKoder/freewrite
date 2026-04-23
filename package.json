@@ -4,18 +4,30 @@
   "description": "A simple app to freewrite",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "build": "electron-builder --win",
-    "dist": "electron-builder --win",
-    "pack": "electron-builder --dir",
-    "make": "electron-builder --win",
+    "start": "npm run build:assets && electron .",
+    "dev": "npm run build:assets && concurrently -k \"npm:watch:ts\" \"npm:watch:css\" \"npm:watch:electron\"",
+    "build": "npm run build:assets && electron-builder --win",
+    "dist": "npm run build:assets && electron-builder --win",
+    "pack": "npm run build:assets && electron-builder --dir",
+    "make": "npm run build:assets && electron-builder --win",
+    "build:assets": "npm run build:ts && npm run build:css",
+    "build:ts": "tsc",
+    "watch:ts": "tsc -w --preserveWatchOutput",
+    "build:css": "tailwindcss -i ./src/css/tailwind.css -o ./css/styles.css --minify",
+    "watch:css": "tailwindcss -i ./src/css/tailwind.css -o ./css/styles.css --watch",
+    "watch:electron": "electronmon .",
     "postinstall": "electron-builder install-app-deps"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^24.0.1",
+    "concurrently": "^9.1.2",
     "electron": "^29.1.0",
-    "electron-builder": "^24.9.1"
+    "electron-builder": "^24.9.1",
+    "electronmon": "^2.0.2",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0"

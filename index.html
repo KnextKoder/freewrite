@@ -7,66 +7,57 @@
   <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
 </head>
 <body>
-  <div class="app-container">
-    <!-- Main content area -->
-    <div class="main-content">
-      <!-- Editor area -->
-      <div class="editor-container">
-        <div id="placeholder" class="placeholder">Begin writing</div>
-        <textarea id="editor" class="editor" spellcheck="false">
-
-farza is the 🐕</textarea>
+  <div class="relative flex h-screen w-full">
+    <div class="relative m-0 flex h-full flex-1 flex-col overflow-hidden rounded-none bg-[var(--bg-color)]">
+      <div class="relative flex flex-1 justify-center overflow-hidden py-5">
+        <div id="placeholder" class="placeholder pointer-events-none absolute left-1/2 top-1/2 text-[18px]" style="transform: translate(-50%, -50%);">Begin writing</div>
+        <textarea id="editor" class="editor mx-auto h-full w-full max-w-[800px] resize-none border-none bg-transparent px-5 py-[30px] text-[18px] leading-[1.6] outline-none" spellcheck="false"></textarea>
       </div>
       
-      <!-- Bottom toolbar -->
-      <div class="bottom-toolbar">
-        <div class="left-controls">
-          <span id="font-size-btn" class="control-item">18px</span>
-          <span class="control-separator">•</span>
-          <span id="font-btn" class="control-item">Lato</span>
-          <span class="control-separator">•</span>
-          <span id="system-font-btn" class="control-item">System</span>
-          <span class="control-separator">•</span>
-          <span id="serif-font-btn" class="control-item">Serif</span>
-          <span class="control-separator">•</span>
-          <span id="random-font-btn" class="control-item">Random [Noto Serif Kannada]</span>
+      <div class="bottom-toolbar flex select-none items-center justify-between border-t border-[var(--toolbar-border)] bg-[var(--toolbar-bg)] px-5 py-[15px] text-[13px] text-[var(--control-text)]">
+        <div class="left-controls flex items-center">
+          <span id="font-size-btn" class="control-item flex cursor-pointer items-center">18px</span>
+          <span class="control-separator mx-[5px]">•</span>
+          <span id="font-btn" class="control-item flex cursor-pointer items-center">Lato</span>
+          <span class="control-separator mx-[5px]">•</span>
+          <span id="system-font-btn" class="control-item flex cursor-pointer items-center">System</span>
+          <span class="control-separator mx-[5px]">•</span>
+          <span id="serif-font-btn" class="control-item flex cursor-pointer items-center">Serif</span>
+          <span class="control-separator mx-[5px]">•</span>
+          <span id="random-font-btn" class="control-item flex cursor-pointer items-center">Random [Noto Serif Kannada]</span>
         </div>
-        <div class="right-controls">
-          <span id="timer-btn" class="control-item">15:00</span>
-          <span class="control-separator">•</span>
-          <span id="theme-btn" class="control-item">Dark Mode</span>
-          <span class="control-separator">•</span>
-          <span id="chat-btn" class="control-item">Chat</span>
-          <span class="control-separator">•</span>
-          <span id="fullscreen-btn" class="control-item">Exit Fullscreen</span>
-          <span class="control-separator">•</span>
-          <span id="new-entry-btn" class="control-item">New Entry</span>
-          <span class="control-separator">•</span>
-          <span id="history-btn" class="control-item"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>
+        <div class="right-controls flex items-center">
+          <span id="timer-btn" class="control-item flex cursor-pointer items-center">15:00</span>
+          <span class="control-separator mx-[5px]">•</span>
+          <span id="theme-btn" class="control-item flex cursor-pointer items-center">Dark Mode</span>
+          <span class="control-separator mx-[5px]">•</span>
+          <span id="chat-btn" class="control-item flex cursor-pointer items-center">Chat</span>
+          <span class="control-separator mx-[5px]">•</span>
+          <span id="fullscreen-btn" class="control-item flex cursor-pointer items-center">Exit Fullscreen</span>
+          <span class="control-separator mx-[5px]">•</span>
+          <span id="new-entry-btn" class="control-item flex cursor-pointer items-center">New Entry</span>
+          <span class="control-separator mx-[5px]">•</span>
+          <span id="history-btn" class="control-item flex cursor-pointer items-center"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>
         </div>
       </div>
       
-      <!-- Font size popup -->
-      <div id="font-size-popup" class="popup">
-        <div class="popup-content">
-          <button class="size-option" data-size="16">16px</button>
-          <button class="size-option" data-size="18">18px</button>
-          <button class="size-option" data-size="20">20px</button>
-          <button class="size-option" data-size="22">22px</button>
-          <button class="size-option" data-size="24">24px</button>
-          <button class="size-option" data-size="26">26px</button>
+      <div id="font-size-popup" class="popup absolute bottom-[60px] left-5 z-[1000] rounded border border-[var(--popup-border)] bg-[var(--popup-bg)]">
+        <div class="popup-content flex flex-col p-[10px]">
+          <button class="size-option border-none bg-transparent px-[15px] py-2 text-left text-[14px]" data-size="16">16px</button>
+          <button class="size-option border-none bg-transparent px-[15px] py-2 text-left text-[14px]" data-size="18">18px</button>
+          <button class="size-option border-none bg-transparent px-[15px] py-2 text-left text-[14px]" data-size="20">20px</button>
+          <button class="size-option border-none bg-transparent px-[15px] py-2 text-left text-[14px]" data-size="22">22px</button>
+          <button class="size-option border-none bg-transparent px-[15px] py-2 text-left text-[14px]" data-size="24">24px</button>
+          <button class="size-option border-none bg-transparent px-[15px] py-2 text-left text-[14px]" data-size="26">26px</button>
         </div>
       </div>
 
-      <!-- Entries sidebar (hidden by default) -->
-      <div id="sidebar" class="sidebar hidden">
-        <div class="sidebar-header">
-          <h2>Entries</h2>
-          <button id="close-sidebar-btn">×</button>
+      <div id="sidebar" class="sidebar is-hidden absolute right-0 top-0 z-[1000] h-full w-[250px] overflow-y-auto border-l border-black/5 bg-[var(--sidebar-bg)]">
+        <div class="sidebar-header flex items-center justify-between border-b border-black/10 p-[15px]">
+          <h2 class="text-[16px] font-normal">Entries</h2>
+          <button id="close-sidebar-btn" class="cursor-pointer border-0 bg-transparent text-[18px] text-[var(--text-color)]">×</button>
         </div>
-        <div id="entries-list" class="entries-list">
-          <!-- Entries will be dynamically added here -->
-        </div>
+        <div id="entries-list" class="entries-list py-[10px]"></div>
       </div>
     </div>
   </div>
