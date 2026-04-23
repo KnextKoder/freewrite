@@ -1,66 +1,23 @@
-//
-//  .gitignore
-//  freewrite
-//
-//  Created by thorfinn on 4/5/25.
-//
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
 
-# Xcode
-build/
-DerivedData/
-*.pbxuser
-!default.pbxuser
-*.mode1v3
-!default.mode1v3
-*.mode2v3
-!default.mode2v3
-*.perspectivev3
-!default.perspectivev3
-xcuserdata/
-*.xccheckout
-*.moved-aside
-*.xcuserstate
+# Build output
+dist/
+out/
 
-# Swift Package Manager
-.build/
-Packages/
-Package.pins
-Package.resolved
-.swiftpm/xcode/package.xcworkspace/
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
 
-# CocoaPods
-Pods/
-Podfile.lock
-
-# Carthage
-Carthage/Build/
-
-# Fastlane
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots
-fastlane/test_output
-
-# Archives
-*.xcarchive
-
-# Xcode Server
-*.xcscheme
-*.xctestrun
-
-# Playgrounds
-timeline.xctimeline
-playground.xcworkspace
-
-# App data
-*.sqlite
-*.sqlite-shm
-*.sqlite-wal
-
-# macOS
+# OS specific
 .DS_Store
-.AppleDouble
-.LSOverride
+Thumbs.db
 
-# Icon?
-Icon?
+# Electron build
+release-builds/ 
