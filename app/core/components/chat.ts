@@ -1,4 +1,4 @@
-import { aiChatPrompt, claudePrompt } from "../constants";
+import { aiChatPrompt, claudePrompt, geminiPrompt } from "../constants";
 import { RendererElements } from "../dom";
 
 type ChatControllerDependencies = {
@@ -57,6 +57,20 @@ const openClaude = (ipcRenderer: Electron.IpcRenderer, content: string): void =>
   });
 };
 
+const openGemini = (ipcRenderer: Electron.IpcRenderer, content: string): void => {
+  const fullText = `${geminiPrompt}\n\n${content.trim()}`;
+  
+  ipcRenderer.send("copy-to-clipboard", fullText);
+
+  showCustomAlert("Context copied! Just paste it (Ctrl+V) into Gemini.", () => {
+    setTimeout(() => {
+      ipcRenderer.send("open-external-url", {
+        url: `https://gemini.google.com/`
+      });
+    }, 500);
+  });
+};
+
 export const createChatController = ({ elements, ipcRenderer }: ChatControllerDependencies): ChatController => {
   const toggleChatMenu = (): void => {
     const existingPopup = document.querySelector<HTMLDivElement>(".chat-popup");
@@ -94,6 +108,8 @@ export const createChatController = ({ elements, ipcRenderer }: ChatControllerDe
         <button id="chatgpt-btn" class="chat-option" tabindex="0">ChatGPT</button>
         <div class="chat-divider"></div>
         <button id="claude-btn" class="chat-option" tabindex="0">Claude</button>
+        <div class="chat-divider"></div>
+        <button id="gemini-btn" class="chat-option" tabindex="0">Gemini</button>
       </div>
     `;
 
@@ -107,7 +123,9 @@ export const createChatController = ({ elements, ipcRenderer }: ChatControllerDe
     document.getElementById("chatgpt-btn")?.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
-      document.body.removeChild(popup);
+      if (popup.parentNode === document.body) {
+        document.body.removeChild(popup);
+      }
       elements.editor.focus();
       openChatGPT(ipcRenderer, elements.editor.value);
     });
@@ -115,9 +133,21 @@ export const createChatController = ({ elements, ipcRenderer }: ChatControllerDe
     document.getElementById("claude-btn")?.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
-      document.body.removeChild(popup);
+      if (popup.parentNode === document.body) {
+        document.body.removeChild(popup);
+      }
       elements.editor.focus();
       openClaude(ipcRenderer, elements.editor.value);
+    });
+
+    document.getElementById("gemini-btn")?.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (popup.parentNode === document.body) {
+        document.body.removeChild(popup);
+      }
+      elements.editor.focus();
+      openGemini(ipcRenderer, elements.editor.value);
     });
 
     const closePopup = (event: MouseEvent) => {
@@ -128,7 +158,9 @@ export const createChatController = ({ elements, ipcRenderer }: ChatControllerDe
 
       event.preventDefault();
       event.stopPropagation();
-      document.body.removeChild(popup);
+      if (popup.parentNode === document.body) {
+        document.body.removeChild(popup);
+      }
       document.removeEventListener("click", closePopup);
 
       requestAnimationFrame(() => {

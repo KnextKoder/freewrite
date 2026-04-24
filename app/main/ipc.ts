@@ -1,4 +1,4 @@
-import { app, ipcMain, IpcMainEvent, shell } from "electron";
+import { app, ipcMain, IpcMainEvent, shell, clipboard } from "electron";
 import { loadEntries, loadEntry, loadWelcomeMessage, saveEntry } from "./storage";
 import { getMainWindow } from "./window";
 import { LoadEntryPayload, OpenExternalUrlPayload, SaveEntryPayload } from "./types";
@@ -52,6 +52,10 @@ export const registerIpcHandlers = (appRootPath: string): void => {
 
   ipcMain.on("open-external-url", (_event: IpcMainEvent, data: OpenExternalUrlPayload) => {
     shell.openExternal(data.url);
+  });
+
+  ipcMain.on("copy-to-clipboard", (_event: IpcMainEvent, text: string) => {
+    clipboard.writeText(text);
   });
 
   ipcMain.on("handle-escape", () => {

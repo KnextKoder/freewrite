@@ -6,7 +6,12 @@ export const createThemeController = (elements: RendererElements): { initialize:
   };
 
   const initialize = (): void => {
-    const savedTheme = localStorage.getItem("theme") ?? "light";
+    let savedTheme = localStorage.getItem("theme");
+    
+    if (!savedTheme) {
+      savedTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+
     document.documentElement.setAttribute("data-theme", savedTheme);
     updateThemeButton(savedTheme);
   };

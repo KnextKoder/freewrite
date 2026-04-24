@@ -7,6 +7,7 @@ export const createMainWindow = (appRootPath: string): BrowserWindow => {
   mainWindow = new BrowserWindow({
     width: 1100,
     height: 600,
+    fullscreen: true,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
@@ -23,6 +24,10 @@ export const createMainWindow = (appRootPath: string): BrowserWindow => {
 
   mainWindow.once("ready-to-show", () => {
     mainWindow?.show();
+  });
+
+  mainWindow.webContents.on("console-message", (event, level, message, line, sourceId) => {
+    console.log(`[Browser Console]: ${message} at ${sourceId}:${line}`);
   });
 
   Menu.setApplicationMenu(Menu.buildFromTemplate([]));
