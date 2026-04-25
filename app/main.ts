@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import { registerIpcHandlers } from "./main/ipc";
 import { createMainWindow } from "./main/window";
+import { setupUpdater } from "./main/updater";
 
 if (require("electron-squirrel-startup")) {
   app.quit();
@@ -11,6 +12,7 @@ const appRootPath = app.getAppPath();
 app.whenReady().then(() => {
   createMainWindow(appRootPath);
   registerIpcHandlers(appRootPath);
+  setupUpdater();
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {

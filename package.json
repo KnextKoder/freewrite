@@ -1,7 +1,11 @@
 {
-  "name": "freewrite-electron",
-  "version": "1.0.0",
+  "name": "freewrite",
+  "version": "1.0.1",
   "description": "A simple app to freewrite",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/knextkoder/freewrite"
+  },
   "main": "generated/main.js",
   "scripts": {
     "start": "npm run build:assets && electron .",
@@ -34,11 +38,15 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "electron-squirrel-startup": "^1.0.0",
+    "electron-updater": "^6.8.3"
   },
   "build": {
     "appId": "com.freewrite.app",
     "productName": "Freewrite",
+    "publish": [
+      "github"
+    ],
     "win": {
       "target": [
         "nsis",
