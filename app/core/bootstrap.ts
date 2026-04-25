@@ -54,6 +54,11 @@ export const bootstrapRendererApp = (): void => {
   elements.serifFontButton.addEventListener("click", () => editorController.setFont("serif"));
   elements.randomFontButton.addEventListener("click", () => editorController.setFont("random"));
 
+  elements.fontButton.addEventListener("contextmenu", (event) => editorController.toggleFontOptionsMenu(event, "lato"));
+  elements.systemFontButton.addEventListener("contextmenu", (event) => editorController.toggleFontOptionsMenu(event, "system"));
+  elements.serifFontButton.addEventListener("contextmenu", (event) => editorController.toggleFontOptionsMenu(event, "serif"));
+  elements.randomFontButton.addEventListener("contextmenu", (event) => editorController.toggleFontOptionsMenu(event, "random"));
+
   document.querySelectorAll<HTMLButtonElement>(".size-option").forEach((option) => {
     option.addEventListener("click", () => {
       const size = Number.parseInt(option.getAttribute("data-size") ?? "18", 10);
@@ -85,6 +90,12 @@ export const bootstrapRendererApp = (): void => {
     const chatPopup = document.querySelector(".chat-popup");
     if (chatPopup) {
       document.body.removeChild(chatPopup);
+      return;
+    }
+
+    const fontOptionsPopup = document.querySelector(".font-options-popup");
+    if (fontOptionsPopup) {
+      document.body.removeChild(fontOptionsPopup);
       return;
     }
 

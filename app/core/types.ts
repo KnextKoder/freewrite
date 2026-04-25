@@ -27,6 +27,9 @@ export type WelcomeMessagePayload = {
 
 export type RendererState = {
   selectedFont: string;
+  selectedFontType: FontType;
+  defaultFontType: FontType | null;
+  defaultRandomFont: string | null;
   fontSize: number;
   timeRemaining: number;
   timerIsRunning: boolean;

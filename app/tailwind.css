@@ -200,6 +200,16 @@ body.timer-complete .editor {
   color: var(--control-text-hover);
 }
 
+.chat-option:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.chat-option:disabled:hover {
+  background-color: transparent;
+  color: var(--control-text);
+}
+
 .chat-divider {
   @apply h-px;
   background-color: var(--popup-border);
